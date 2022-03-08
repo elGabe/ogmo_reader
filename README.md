@@ -1,5 +1,5 @@
-# ogmo_reader
-A LOVE2D library for loading OGMO Editor maps
+# Ogmo Reader
+A LÖVE library for loading OGMO Editor maps
 
 ## Functions
 
