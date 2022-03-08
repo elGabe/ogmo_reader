@@ -431,6 +431,8 @@ function ogmo.read_map(path, texture)
         -- Get current layer
         local layer = map.data.layers[l]
         
+        -- IMPROVE ON THIS!!!!
+        -- USE ASSERTS AND DEFAULTS INSTEAD
         -- Check if this is an entity layer
         if layer.entities ~= nil then
             map.entities = layer.entities
@@ -443,11 +445,6 @@ function ogmo.read_map(path, texture)
 
         if (layer.data2D ~= nil) then
             --[TODO] Unpack data2D into 1D array and run through same process
-        end
-
-        -- This layer represents solids
-        if (string.lower(layer.name) == "solids") then
-            map.solids = layer.data
         end
     end
 
@@ -473,6 +470,9 @@ function ogmo.read_map(path, texture)
         end
     end
 
+
+-- ABILITY TO DRAW TO A POSITION
+-- Change scale? Separate texture??
 function map:draw()
 
     -- Loop through the tiles to draw
@@ -512,5 +512,7 @@ end
 
     return map
 end
+
+-- TODO: Decorations, instances, collisions(??)
 
 return ogmo
