@@ -35,7 +35,7 @@ function ogmo.read_map(path, texture)
     local string = love.filesystem.read(path)
     map.data = json.decode(string)
 
-    map.tiles_layer = {}
+    map.layers = {}
     map.entities = {}
     map.width = map.data.width
     map.height = map.data.height
@@ -55,7 +55,7 @@ function ogmo.read_map(path, texture)
         
         -- Check if layer has data
         if layer.data ~= nil then
-            add(map.tiles_layer, layer)
+            add(map.layers, layer)
         end
 
         if (layer.data2D ~= nil) then
@@ -86,14 +86,17 @@ function ogmo.read_map(path, texture)
     end
 
 -- Change scale? Separate texture??
-function map:draw(map_x, map_y)
+function map:draw(origin_x, origin_y, layer_index)
 
-  map_x = map_x or 0
-  map_y = map_y or 0
+    origin_x = origin_x or 0
+    origin_y = origin_y or 0
 
-    -- Loop through the tiles to draw
-    for l = #map.tiles_layer, 1, -1 do
-        local layer = map.tiles_layer[l]
+    -- 
+    if (layer_index ~= nil) then
+        
+        assert(layer_index >= 1, "Lua tables are 1-indexed; 'layer_index' cannot be lower than 1.")
+
+        local layer = map.layers[layer_index]
 
         for y = 0, grid_height-1 do
             for x = 0, grid_width-1 do
@@ -102,7 +105,25 @@ function map:draw(map_x, map_y)
                 local yy = cell_height * y
 
                 if (tile ~= -1) then
-                    love_draw(map.texture, map.subimages[tile+1], map_x + xx, map_y + yy)
+                    love_draw(map.texture, map.subimages[tile+1], origin_x + xx, origin_y + yy)
+                end
+            end
+        end        
+    else
+        -- If layer_index is omitted, assume we draw all layers
+        -- Loop through the tiles to draw
+        for l = #map.layers, 1, -1 do
+            local layer = map.layers[l]
+
+            for y = 0, grid_height-1 do
+                for x = 0, grid_width-1 do
+                    local tile = layer.data[(y * grid_width + x) + 1]
+                    local xx = cell_width * x
+                    local yy = cell_height * y
+
+                    if (tile ~= -1) then
+                        love_draw(map.texture, map.subimages[tile+1], origin_x + xx, origin_y + yy)
+                    end
                 end
             end
         end
@@ -110,16 +131,16 @@ function map:draw(map_x, map_y)
 
 end
 
-function map:draw_layer(layer_index, map_x, map_y)
+function map:draw_layer(layer_index, origin_x, origin_y)
 
     layer_index = layer_index or 1
 
     assert(layer_index >= 1, "Lua tables are 1-indexed; 'layer_index' cannot be lower than 1.")
     
-    map_x = map_x or 0
-    map_y = map_y or 0
+    origin_x = origin_x or 0
+    origin_y = origin_y or 0
 
-    local layer = map.tiles_layer[layer_index]
+    local layer = map.layers[layer_index]
 
     for y = 0, grid_height-1 do
         for x = 0, grid_width-1 do
@@ -128,7 +149,7 @@ function map:draw_layer(layer_index, map_x, map_y)
             local yy = cell_height * y
 
             if (tile ~= -1) then
-                love_draw(map.texture, map.subimages[tile+1], map_x + xx, map_y + yy)
+                love_draw(map.texture, map.subimages[tile+1], origin_x + xx, origin_y + yy)
             end
         end
     end
