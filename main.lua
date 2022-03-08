@@ -21,12 +21,9 @@ function love.draw()
 	level_0:draw()
 
 	-- Draw map at a specific coordinate
-	--level_0:draw(100, 100)
-	
-	-- Draw map centered, using map properties
-	--level_0:draw(WINDOW_WIDTH/2 - level_0.width/2, WINDOW_HEIGHT/2 - level_0.height/2)
+	--level_0:draw(100, 100, "tiles")
 
 	-- Draw map layer
-	--level_0:draw_layer(2, 100, 100)
+	--level_0:draw_layer("tiles 2", 100, 100)
 
 end

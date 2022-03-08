@@ -55,7 +55,7 @@ function ogmo.read_map(path, texture)
         
         -- Check if layer has data
         if layer.data ~= nil then
-            add(map.layers, layer)
+            map.layers[layer.name] = layer
         end
 
         if (layer.data2D ~= nil) then
@@ -86,17 +86,17 @@ function ogmo.read_map(path, texture)
     end
 
 -- Change scale? Separate texture??
-function map:draw(origin_x, origin_y, layer_index)
+function map:draw(origin_x, origin_y, layer_name)
 
     origin_x = origin_x or 0
     origin_y = origin_y or 0
 
     -- 
-    if (layer_index ~= nil) then
-        
-        assert(layer_index >= 1, "Lua tables are 1-indexed; 'layer_index' cannot be lower than 1.")
+    if (layer_name ~= nil) then
 
-        local layer = map.layers[layer_index]
+        assert(type(layer_name) == "string", "argument 'layer_name' is not of type string")
+
+        local layer = map.layers[layer_name]
 
         for y = 0, grid_height-1 do
             for x = 0, grid_width-1 do
@@ -112,8 +112,7 @@ function map:draw(origin_x, origin_y, layer_index)
     else
         -- If layer_index is omitted, assume we draw all layers
         -- Loop through the tiles to draw
-        for l = #map.layers, 1, -1 do
-            local layer = map.layers[l]
+        for name, layer in pairs(map.layers) do
 
             for y = 0, grid_height-1 do
                 for x = 0, grid_width-1 do
@@ -131,16 +130,14 @@ function map:draw(origin_x, origin_y, layer_index)
 
 end
 
-function map:draw_layer(layer_index, origin_x, origin_y)
+function map:draw_layer(layer_name, origin_x, origin_y)
 
-    layer_index = layer_index or 1
-
-    assert(layer_index >= 1, "Lua tables are 1-indexed; 'layer_index' cannot be lower than 1.")
+    assert(type(layer_name) == "string", "argument 'layer_name' is not of type string")
     
     origin_x = origin_x or 0
     origin_y = origin_y or 0
 
-    local layer = map.layers[layer_index]
+    local layer = map.layers[layer_name]
 
     for y = 0, grid_height-1 do
         for x = 0, grid_width-1 do
