@@ -14,24 +14,56 @@ in the begining of your ```main.lua```
 
 ## Functions
 
-### ogmo.read_map(path_to_json, image)
+### ogmo.read_map(json, image)
 
-Loads an ogmo map and returns its table. Returns ogmo map as a table.
+Loads an ogmo map and returns its table.
 
+**Synopsis**
 ```lua
 function love.load()
   map = ogmo.read_map("path/to/level.json", love.graphics.newImage("path/to/tileset.png"))
 end
 ```
-### map:draw(origin_x, origin_y)
+**Arguments**  
+```json```  
+A path to the level's json file.  
+```image```  
+The image to draw the map with. AKA: The map's tileset loaded with ```love.graphics.newImage```
+
+### map:draw(origin_x, origin_y, layer_index)
 
 Draws an ogmo map.
 
 ```lua
 function love.draw()
-  map:draw(100, 100)
+  map:draw(100, 100, 1)
 end
 ```
+**Arguments**  
+All arguments here are optional. See ```main.lua``` for examples.  
+```origin_x```  
+X coordinate to draw map from  
+```origin_y```  
+Y coordinate to draw map from  
+```layer_index```  
+Layer of the map to draw. Omit to draw all layers.
+
+### map:draw_layer(origin_x, origin_y, layer_index)  
+Explicitly draws a layer from the map.
+
+```lua
+function love.draw()
+  map:draw_layer(100, 100, 2)
+end
+```
+**Arguments**  
+```origin_x```  
+X coordinate to draw map from  
+```origin_y```  
+Y coordinate to draw map from  
+```layer_index```  
+Layer of the map to draw. Must specify a layer.
+
 ## Properties
 
 ### width
